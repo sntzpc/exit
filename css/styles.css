@@ -1,0 +1,33 @@
+:root {
+  --primary-color:#2e7d32;
+  --secondary-color:#7cb342;
+  --accent-color:#ffa000;
+}
+body{background:#f8f9fa;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;}
+.navbar{background:var(--primary-color);}
+.card{border-radius:10px;box-shadow:0 4px 6px rgba(0,0,0,.1);margin-bottom:20px;border:none;}
+.card-header{background:var(--primary-color);color:#fff;border-radius:10px 10px 0 0!important;}
+.btn-primary{background:var(--primary-color);border-color:var(--primary-color);}
+.btn-primary:hover{background:#1b5e20;border-color:#1b5e20;}
+.btn-success{background:var(--secondary-color);border-color:var(--secondary-color);}
+.btn-warning{background:var(--accent-color);border-color:var(--accent-color);color:#fff;}
+.table-responsive{overflow-x:auto;}
+.table th{white-space:nowrap;background:var(--primary-color);color:#fff;}
+.table td{white-space:nowrap;vertical-align:middle;}
+.nav-tabs .nav-link.active{font-weight:bold;border-bottom:3px solid var(--accent-color);}
+.required-field::after{content:" *";color:red;}
+.storage-bar{height:20px;background:#e9ecef;border-radius:5px;margin-top:5px;}
+.storage-fill{height:100%;border-radius:5px;background:var(--secondary-color);transition:width .5s ease;}
+/* FAB Gear */
+.fab-settings{
+  position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom));z-index:1050;
+  width:56px;height:56px;border-radius:50%;padding:0!important;line-height:1;outline:none;
+  -webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center;
+  background:var(--accent-color);color:#fff;border:none;box-shadow:0 8px 16px rgba(0,0,0,.2);
+  transform:translateZ(0);transition:transform .12s ease, box-shadow .12s ease;
+}
+.fab-settings:hover,.fab-settings:focus{transform:scale(1.05);box-shadow:0 10px 20px rgba(0,0,0,.24);}
+.fab-settings i{font-size:1.35rem;pointer-events:none;}
+@supports not (bottom: env(safe-area-inset-bottom)){.fab-settings{bottom:20px;}}
+@media (max-width:576px){.fab-settings{right:20px;bottom:calc(20px + env(safe-area-inset-bottom));width:56px;height:56px;}}
+@media (max-width:768px){.card{margin-bottom:15px}.btn{width:100%;margin-bottom:10px}.btn-group .btn{width:auto}}
