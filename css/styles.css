@@ -30,4 +30,7 @@ body{background:#f8f9fa;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
 .fab-settings i{font-size:1.35rem;pointer-events:none;}
 @supports not (bottom: env(safe-area-inset-bottom)){.fab-settings{bottom:20px;}}
 @media (max-width:576px){.fab-settings{right:20px;bottom:calc(20px + env(safe-area-inset-bottom));width:56px;height:56px;}}
-@media (max-width:768px){.card{margin-bottom:15px}.btn{width:100%;margin-bottom:10px}.btn-group .btn{width:auto}}
+@media (max-width: 768px) {.btn:not(.fab-settings) {width: 100%; margin-bottom: 10px;}.btn-group .btn { width: auto; }}
+
+/* Tambahkan guard di bawah agar FAB selalu proporsional */
+.fab-settings { width: 56px !important; height: 56px !important; padding: 0 !important; line-height: 1; touch-action: manipulation;}
