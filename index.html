@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exit Interview - Program Pelatihan</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- SheetJS for Excel export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2e7d32;
+            --secondary-color: #7cb342;
+            --accent-color: #ffa000;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background-color: var(--primary-color);
+        }
+        
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            border: none;
+        }
+        
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #1b5e20;
+            border-color: #1b5e20;
+        }
+        
+        .btn-success {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+        
+        .btn-warning {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: white;
+        }
+        
+        .storage-bar {
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        
+        .storage-fill {
+            height: 100%;
+            border-radius: 5px;
+            background-color: var(--secondary-color);
+            transition: width 0.5s ease;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        .table th {
+            white-space: nowrap;
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .table td {
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+        
+        .nav-tabs .nav-link.active {
+            font-weight: bold;
+            border-bottom: 3px solid var(--accent-color);
+        }
+        
+        .required-field::after {
+            content: " *";
+            color: red;
+        }
+
+        /* === FAB (Floating Action Button) Settings === */
+.fab-settings {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 1050;
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 16px rgba(0,0,0,.2);
+  background-color: var(--accent-color);
+  color: #fff;
+  border: none;
+}
+.fab-settings:hover { transform: scale(1.05); }
+        
+        @media (max-width: 768px) {
+            .card {
+                margin-bottom: 15px;
+            }
+            
+            .btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .btn-group .btn {
+                width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-tree-fill me-2"></i>Exit Interview
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" id="form-tab-link">
+                            <i class="bi bi-clipboard-plus me-1"></i>Form Interview
+                        </a>
+                    </li>
+                    <li class="nav-item d-none">
+                        <a class="nav-link" href="#" id="report-tab-link">
+                            <i class="bi bi-table me-1"></i>Laporan Data
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Tabs -->
+        <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="form-tab" data-bs-toggle="tab" data-bs-target="#form" type="button" role="tab">
+                    <i class="bi bi-clipboard-plus me-1"></i>Form
+                </button>
+            </li>
+            <li class="nav-item d-none" role="presentation">
+                <button class="nav-link" id="report-tab" data-bs-toggle="tab" data-bs-target="#report" type="button" role="tab">
+                    <i class="bi bi-table me-1"></i>Report
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+            <!-- Form Tab -->
+            <div class="tab-pane fade show active" id="form" role="tabpanel">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-clipboard-plus me-2"></i>Form
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="exitInterviewForm">
+                            <input type="hidden" id="editId" value="">
+                            
+                            <!-- Section 1: Participant Data -->
+                            <div class="mb-4">
+                                <h6 class="border-bottom pb-2 text-primary">I. DATA PESERTA</h6>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="participantName" class="form-label required-field">Nama Peserta</label>
+                                        <input type="text" class="form-control" id="participantName" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="participantCampus" class="form-label required-field">Asal Kampus</label>
+                                        <input type="text" class="form-control" id="participantCampus" required>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="participantDepartment" class="form-label required-field">Lokasi Pelatihan</label>
+                                        <input type="text" class="form-control" id="participantDepartment" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="participantSupervisor" class="form-label required-field">Mentor</label>
+                                        <input type="text" class="form-control" id="participantSupervisor" required>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="internshipStart" class="form-label required-field">Periode Pelatihan (Mulai)</label>
+                                        <input type="date" class="form-control" id="internshipStart" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="internshipEnd" class="form-label required-field">Periode Pelatihan (Selesai)</label>
+                                        <input type="date" class="form-control" id="internshipEnd" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section 2: Interview Results -->
+                            <div class="mb-4">
+                                <h6 class="border-bottom pb-2 text-primary">II. HASIL WAWANCARA</h6>
+                                
+                                <!-- Overall Experience -->
+                                <div class="mb-3">
+                                    <label class="form-label required-field">1. Umpan Balik terhadap Program Pelatihan</label>
+                                    <div>
+                                        <label class="form-label">a. Keseluruhan pengalaman pelatihan?</label>
+                                        <div class="d-flex flex-wrap gap-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="overallExperience" id="expVeryPositive" value="Sangat Positif" required>
+                                                <label class="form-check-label" for="expVeryPositive">Sangat Positif</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="overallExperience" id="expPositive" value="Positif">
+                                                <label class="form-check-label" for="expPositive">Positif</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="overallExperience" id="expNeutral" value="Netral">
+                                                <label class="form-check-label" for="expNeutral">Netral</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="overallExperience" id="expNegative" value="Negatif">
+                                                <label class="form-check-label" for="expNegative">Negatif</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="overallExperience" id="expVeryNegative" value="Sangat Negatif">
+                                                <label class="form-check-label" for="expVeryNegative">Sangat Negatif</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="bestThing" class="form-label">b. Hal terbaik yang didapatkan:</label>
+                                        <textarea class="form-control" id="bestThing" rows="3"></textarea>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="biggestChallenge" class="form-label">c. Hal yang paling menantang:</label>
+                                        <textarea class="form-control" id="biggestChallenge" rows="3"></textarea>
+                                    </div>
+                                </div>
+                                
+                                <!-- Learning & Guidance -->
+                                <div class="mb-3">
+                                    <label class="form-label">2. Pembelajaran & Bimbingan</label>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">a. Kualitas pembekalan materi kelas:</label>
+                                            <select class="form-select" id="classQuality">
+                                                <option value="" selected disabled>Pilih penilaian</option>
+                                                <option value="Sangat Baik">Sangat Baik</option>
+                                                <option value="Baik">Baik</option>
+                                                <option value="Cukup">Cukup</option>
+                                                <option value="Kurang">Kurang</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">b. Kualitas bimbingan dari Mandor:</label>
+                                            <select class="form-select" id="supervisorQuality">
+                                                <option value="" selected disabled>Pilih penilaian</option>
+                                                <option value="Sangat Baik">Sangat Baik</option>
+                                                <option value="Baik">Baik</option>
+                                                <option value="Cukup">Cukup</option>
+                                                <option value="Kurang">Kurang</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Environment & Facilities -->
+                                <div class="mb-3">
+                                    <label class="form-label">3. Lingkungan & Fasilitas</label>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">a. Kualitas fasilitas (akomodasi, makan, dll):</label>
+                                            <select class="form-select" id="facilityQuality">
+                                                <option value="" selected disabled>Pilih penilaian</option>
+                                                <option value="Sangat Baik">Sangat Baik</option>
+                                                <option value="Baik">Baik</option>
+                                                <option value="Cukup">Cukup</option>
+                                                <option value="Kurang">Kurang</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="workEnvironment" class="form-label">b. Komentar tentang lingkungan kerja:</label>
+                                            <textarea class="form-control" id="workEnvironment" rows="2"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Reason for Not Joining -->
+                                <div class="mb-3">
+                                    <label class="form-label required-field">4. Alasan Tidak Bersedia Bergabung (Bisa lebih dari satu)</label>
+                                    <div class="d-flex flex-wrap gap-3 mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="reasonSalary" value="Gaji & Kompensasi tidak sesuai">
+                                            <label class="form-check-label" for="reasonSalary">Gaji & Kompensasi tidak sesuai</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="reasonCareer" value="Minat Karir (ingin melanjutkan studi/ bidang lain)">
+                                            <label class="form-check-label" for="reasonCareer">Minat Karir (ingin melanjutkan studi/ bidang lain)</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="reasonEnvironment" value="Lingkungan Kerja / Budaya Perusahaan">
+                                            <label class="form-check-label" for="reasonEnvironment">Lingkungan Kerja / Budaya Perusahaan</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="reasonLocation" value="Lokasi / Tempat Tinggal tidak sesuai">
+                                            <label class="form-check-label" for="reasonLocation">Lokasi / Tempat Tinggal tidak sesuai</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="reasonOtherOffer" value="Mendapat tawaran kerja lain yang lebih baik">
+                                            <label class="form-check-label" for="reasonOtherOffer">Mendapat tawaran kerja lain yang lebih baik</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="reasonOther" value="Lainnya">
+                                            <label class="form-check-label" for="reasonOther">Lainnya</label>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="reasonDetail" class="form-label required-field">Jelaskan secara detail alasan utama:</label>
+                                        <textarea class="form-control" id="reasonDetail" rows="3" required></textarea>
+                                    </div>
+                                </div>
+                                
+                                <!-- Other Offers -->
+                                <div class="mb-3">
+                                    <label class="form-label">5. Tawaran dari Perusahaan Lain (Jika ada)</label>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="otherCompany" class="form-label">Perusahaan/ Sektor:</label>
+                                            <input type="text" class="form-control" id="otherCompany">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="otherPosition" class="form-label">Posisi:</label>
+                                            <input type="text" class="form-control" id="otherPosition">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Penawaran yang lebih menarik:</label>
+                                        <div class="d-flex flex-wrap gap-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="offerSalary" value="Gaji lebih tinggi">
+                                                <label class="form-check-label" for="offerSalary">Gaji lebih tinggi</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="offerLocation" value="Lokasi lebih strategis">
+                                                <label class="form-check-label" for="offerLocation">Lokasi lebih strategis</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="offerJobType" value="Jenis pekerjaan">
+                                                <label class="form-check-label" for="offerJobType">Jenis pekerjaan</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="offerOther" value="Benefit lain">
+                                                <label class="form-check-label" for="offerOther">Benefit lain</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Suggestions -->
+                                <div class="mb-3">
+                                    <label for="suggestions" class="form-label">6. Saran untuk Perbaikan Program</label>
+                                    <textarea class="form-control" id="suggestions" rows="3"></textarea>
+                                </div>
+                                
+                                <!-- Interviewer Conclusion -->
+                                <div class="mb-3">
+                                    <label for="conclusion" class="form-label">III. TINDAK LANJUT & KESIMPULAN</label>
+                                    <textarea class="form-control" id="conclusion" rows="3" placeholder="Kesimpulan Pewawancara (Point-point penting yang perlu ditindaklanjuti)..."></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-warning" id="resetForm">
+                                    <i class="bi bi-arrow-clockwise me-1"></i>Reset Form
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-floppy me-1"></i>Simpan
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Tab -->
+            <div class="tab-pane fade" id="report" role="tabpanel">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-table me-2"></i>Report
+                        </h5>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-success" id="exportExcel">
+                                <i class="bi bi-file-earmark-excel me-1"></i>Export
+                            </button>
+                            <button type="button" class="btn btn-sm btn-warning" id="resetAllData">
+                                <i class="bi bi-trash me-1"></i>Hapus
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover" id="dataTable">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama Peserta</th>
+                                        <th>Asal Kampus</th>
+                                        <th>Lokasi Pelatihan</th>
+                                        <th>Pembimbing</th>
+                                        <th>Periode Pelatihan</th>
+                                        <th>Pengalaman</th>
+                                        <th>Alasan Keluar</th>
+                                        <th>Tanggal Input</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody">
+                                    <!-- Data will be populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="alert alert-info mt-3" id="noDataAlert" style="display: none;">
+                            <i class="bi bi-info-circle me-2"></i>Belum ada data exit interview.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Storage Information -->
+        <div class="card mt-4">
+            <div class="card-body py-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="fw-bold">Ussed:</span>
+                        <span id="storageUsage">0 KB</span> from
+                        <span id="storageTotal">5 MB</span>
+                    </div>
+                    <div class="w-50">
+                        <div class="storage-bar">
+                            <div class="storage-fill" id="storageBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Data Exit Interview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="editModalBody">
+                    <!-- Edit form will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="saveEdit">Ubah</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- === Floating Gear Button === -->
+<button class="btn fab-settings" id="btnFabSettings" title="Pengaturan" aria-label="Pengaturan">
+  <i class="bi bi-gear-fill fs-4"></i>
+</button>
+
+<!-- === Modal Admin/Settings === -->
+<div class="modal fade" id="adminSettingsModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-sliders me-2"></i>Pengaturan</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Step 1: Login Admin -->
+        <div id="adminLoginSection">
+          <div class="mb-3">
+            <label class="form-label">Password Admin</label>
+            <div class="input-group">
+              <input type="password" class="form-control" id="adminPassword" placeholder="••••••••••">
+              <button class="btn btn-outline-secondary" type="button" id="togglePwd"><i class="bi bi-eye"></i></button>
+            </div>
+            <div class="form-text">Masukkan password untuk mengakses pengaturan.</div>
+          </div>
+          <div class="alert alert-danger d-none" id="adminPwdError">
+            <i class="bi bi-exclamation-triangle me-1"></i>Password salah.
+          </div>
+        </div>
+
+        <!-- Step 2: Settings -->
+        <div id="settingsSection" class="d-none">
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="switchShowReport">
+            <label class="form-check-label" for="switchShowReport">Tampilkan tab <b>Laporan</b></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+        <button class="btn btn-primary d-none" id="btnSettingsSave"><i class="bi bi-check2 me-1"></i>Simpan</button>
+        <button class="btn btn-primary" id="btnAdminUnlock"><i class="bi bi-unlock me-1"></i>Masuk</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <!-- Bootstrap & jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+	
+    <script>
+// ====== CONFIG ======
+const ADMIN_PASSWORD = 'useradmin123';
+const LS_KEY_SHOW_REPORT = 'showReportTab';         // '1' = tampil, '0' = sembunyi
+const SS_KEY_ADMIN_OK   = 'isAdminUnlocked';        // sessionStorage flag
+
+// ====== UTIL ======
+function isAdminUnlocked(){
+  return sessionStorage.getItem(SS_KEY_ADMIN_OK) === '1';
+}
+function setAdminUnlocked(v){
+  if(v) sessionStorage.setItem(SS_KEY_ADMIN_OK, '1');
+  else sessionStorage.removeItem(SS_KEY_ADMIN_OK);
+}
+
+function getShowReportPref(){
+  // Sekarang default-nya FALSE (sembunyi) jika belum pernah diset.
+  return localStorage.getItem(LS_KEY_SHOW_REPORT) === '1';
+}
+
+function setShowReportPref(show){
+  localStorage.setItem(LS_KEY_SHOW_REPORT, show ? '1' : '0');
+}
+
+function applyReportVisibility(){
+  const show = getShowReportPref();
+
+  const $navItem = $('#report-tab-link').closest('li'); // navbar kanan atas
+  const $tabItem = $('#report-tab').closest('li');      // tombol tab header
+  const $tabPane = $('#report');                        // konten tab
+
+  if(show){
+    // tampilkan: hapus d-none + show()
+    $navItem.removeClass('d-none').show();
+    $tabItem.removeClass('d-none').show();
+  } else {
+    // bila sedang aktif, alihkan ke Form dulu
+    const reportActive = $tabPane.hasClass('active') || $('#report-tab').hasClass('active') || $('#report-tab-link').hasClass('active');
+    if (reportActive){
+      const formTabEl = document.querySelector('#form-tab');
+      if (formTabEl) bootstrap.Tab.getOrCreateInstance(formTabEl).show();
+    }
+    // sembunyikan: tambah d-none + hide()
+    $navItem.addClass('d-none').hide();
+    $tabItem.addClass('d-none').hide();
+    $tabPane.removeClass('show active');
+  }
+}
+
+// ====== UI HANDLERS ======
+$(function(){
+  // Terapkan visibilitas tab saat load
+  applyReportVisibility();
+
+  // FAB click -> buka modal
+  $('#btnFabSettings').on('click', function(){
+    // reset UI modal
+    $('#adminPwdError').addClass('d-none');
+    $('#adminPassword').val('');
+    $('#togglePwd i').removeClass('bi-eye-slash').addClass('bi-eye');
+
+    if(isAdminUnlocked()){
+      // langsung ke settings
+      $('#adminLoginSection').addClass('d-none');
+      $('#settingsSection').removeClass('d-none');
+      $('#btnAdminUnlock').addClass('d-none');
+      $('#btnSettingsSave').removeClass('d-none');
+      // set switch sesuai preferensi
+      $('#switchShowReport').prop('checked', getShowReportPref());
+    } else {
+      // tampilkan login terlebih dahulu
+      $('#adminLoginSection').removeClass('d-none');
+      $('#settingsSection').addClass('d-none');
+      $('#btnAdminUnlock').removeClass('d-none');
+      $('#btnSettingsSave').addClass('d-none');
+    }
+
+    const modal = new bootstrap.Modal(document.getElementById('adminSettingsModal'));
+    modal.show();
+  });
+
+  // Toggle show/hide password
+  $('#togglePwd').on('click', function(){
+    const $inp = $('#adminPassword');
+    const isPwd = $inp.attr('type') === 'password';
+    $inp.attr('type', isPwd ? 'text' : 'password');
+    $(this).find('i').toggleClass('bi-eye bi-eye-slash');
+  });
+
+  // Tombol "Masuk"
+  $('#btnAdminUnlock').on('click', function(){
+    const pwd = $('#adminPassword').val().trim();
+    if(pwd === ADMIN_PASSWORD){
+      setAdminUnlocked(true);
+      $('#adminPwdError').addClass('d-none');
+
+      // switch ke settings
+      $('#adminLoginSection').addClass('d-none');
+      $('#settingsSection').removeClass('d-none');
+      $('#btnAdminUnlock').addClass('d-none');
+      $('#btnSettingsSave').removeClass('d-none');
+
+      // muat preferensi
+      $('#switchShowReport').prop('checked', getShowReportPref());
+    } else {
+      $('#adminPwdError').removeClass('d-none');
+    }
+  });
+
+  // Tombol "Simpan"
+  $('#btnSettingsSave').on('click', function(){
+    const show = $('#switchShowReport').is(':checked');
+    setShowReportPref(show);
+    applyReportVisibility();
+    // opsional: feedback cepat
+    const m = bootstrap.Modal.getInstance(document.getElementById('adminSettingsModal'));
+    if(m) m.hide();
+    setTimeout(()=>alert('Pengaturan disimpan.'), 50);
+  });
+});
+</script>
+
+	<script>
+// ============ [ADD] KONFIGURASI GAS & HEADER ============
+// Ganti ini dengan Web App URL dari project GAS Anda (Deploy -> New deployment -> Web app)
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxZ0cxDa3qzdMNMvAWSVRf3DtGRhLvxA5QD1dNe2_pThu8YpA13z114ypPy2tCP9HyOhA/exec';
+// Nama Sheet default (akan dibuat jika belum ada)
+const SHEET_NAME = 'ExitInterview';
+
+// Header yang akan dicopy ke baris 1 (hanya header yang dicopy, data tidak ditimpa)
+const HEADERS = [
+  'ID','Timestamp',
+  'Nama Peserta','Asal Kampus','Lokasi Pelatihan','Pembimbing',
+  'Periode Mulai','Periode Selesai',
+  'Pengalaman Keseluruhan','Hal Terbaik','Hal Paling Menantang',
+  'Kualitas Kelas','Kualitas Pembimbing','Kualitas Fasilitas',
+  'Lingkungan Kerja',
+  'Alasan Keluar (Checklist)','Detail Alasan',
+  'Perusahaan Lain','Posisi Lain',
+  'Penawaran Menarik (Checklist)',
+  'Saran','Kesimpulan'
+];
+
+// Helper panggil GAS (gunakan Content-Type text/plain agar bebas preflight)
+async function gasCall(op, payload = {}) {
+  try {
+    const res = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+      body: JSON.stringify({ op, sheetName: SHEET_NAME, headers: HEADERS, ...payload })
+    });
+    const txt = await res.text();
+    try { return JSON.parse(txt); } catch { return { ok: true, raw: txt }; }
+  } catch (err) {
+    console.error('[gasCall] error:', err);
+    return { ok: false, error: String(err) };
+  }
+}
+
+// Inisialisasi: pastikan sheet ada & header tercopy
+async function initSheet() {
+  const r = await gasCall('init');
+  if (!r.ok) console.warn('[initSheet] gagal:', r.error || r);
+  else console.log('[initSheet] OK:', r);
+}
+
+// Sync ke Google Sheet.
+// mode = 'save' (tambah) atau 'update' (ubah); data: object form yang sama dgn localStorage.
+async function syncToSheet(data, mode) {
+  const op = mode === 'update' ? 'update' : 'save';
+  const r = await gasCall(op, { data });
+  if (!r.ok) {
+    console.error('[syncToSheet] gagal:', r.error || r);
+    // masih aman: data tersimpan di localStorage; bisa di-sync ulang nanti
+    alert('Tersimpan lokal, namun sync ke Google Sheet gagal. Coba lagi nanti.');
+  } else {
+    console.log('[syncToSheet] sukses:', r);
+  }
+}
+</script>
+
+    
+    <script>
+        $(document).ready(function() {
+            // Initialize variables
+            const STORAGE_KEY = 'exitInterviewData';
+            const MAX_STORAGE = 5 * 1024 * 1024; // 5MB in bytes
+			
+			initSheet(); // memastikan sheet & header siap
+            
+            // Load data on page load
+            loadTableData();
+            updateStorageInfo();
+            applyReportVisibility();
+            
+            // Tab navigation
+            $('#form-tab-link').click(function() {
+                $('#form-tab').tab('show');
+            });
+            
+            $('#report-tab-link').click(function() {
+                $('#report-tab').tab('show');
+                loadTableData();
+            });
+            
+            // Form submission
+            $('#exitInterviewForm').off('submit').on('submit', async function(e) {
+  e.preventDefault();
+                
+				 // Tangkap status edit SEBELUM form direset
+  const isEdit = Boolean($('#editId').val());
+  
+                // Ambil nilai form
+  const formData = {
+    id: $('#editId').val() || Date.now().toString(),
+    timestamp: $('#editId').val() ? getDataById($('#editId').val()).timestamp : new Date().toISOString(),
+    participantName: $('#participantName').val(),
+    participantCampus: $('#participantCampus').val(),
+    participantDepartment: $('#participantDepartment').val(),
+    participantSupervisor: $('#participantSupervisor').val(),
+    internshipStart: $('#internshipStart').val(),
+    internshipEnd: $('#internshipEnd').val(),
+    overallExperience: $('input[name="overallExperience"]:checked').val(),
+    bestThing: $('#bestThing').val(),
+    biggestChallenge: $('#biggestChallenge').val(),
+    classQuality: $('#classQuality').val(),
+    supervisorQuality: $('#supervisorQuality').val(),
+    facilityQuality: $('#facilityQuality').val(),
+    workEnvironment: $('#workEnvironment').val(),
+    reasonDetail: $('#reasonDetail').val(),
+    otherCompany: $('#otherCompany').val(),
+    otherPosition: $('#otherPosition').val(),
+    suggestions: $('#suggestions').val(),
+    conclusion: $('#conclusion').val()
+  };
+
+  // Checkbox
+  formData.reasons = [];
+  if ($('#reasonSalary').is(':checked')) formData.reasons.push($('#reasonSalary').val());
+  if ($('#reasonCareer').is(':checked')) formData.reasons.push($('#reasonCareer').val());
+  if ($('#reasonEnvironment').is(':checked')) formData.reasons.push($('#reasonEnvironment').val());
+  if ($('#reasonLocation').is(':checked')) formData.reasons.push($('#reasonLocation').val());
+  if ($('#reasonOtherOffer').is(':checked')) formData.reasons.push($('#reasonOtherOffer').val());
+  if ($('#reasonOther').is(':checked')) formData.reasons.push($('#reasonOther').val());
+
+  formData.attractiveOffers = [];
+  if ($('#offerSalary').is(':checked')) formData.attractiveOffers.push($('#offerSalary').val());
+  if ($('#offerLocation').is(':checked')) formData.attractiveOffers.push($('#offerLocation').val());
+  if ($('#offerJobType').is(':checked')) formData.attractiveOffers.push($('#offerJobType').val());
+  if ($('#offerOther').is(':checked')) formData.attractiveOffers.push($('#offerOther').val());
+
+  // Simpan lokal
+  saveData(formData);
+
+  // Sync ke Google Sheet
+  await syncToSheet(formData, isEdit ? 'update' : 'save');
+
+  // Reset form
+  $('#exitInterviewForm')[0].reset();
+  $('#editId').val('');
+
+  alert('Data berhasil disimpan & disinkronkan!');
+  // Pindah ke tab report
+  $('#report-tab').tab('show');
+  loadTableData();
+  updateStorageInfo();
+});
+            
+            // Reset form button
+            $('#resetForm').click(function() {
+                $('#exitInterviewForm')[0].reset();
+                $('#editId').val('');
+            });
+            
+            // Reset all data button
+            $('#resetAllData').click(function() {
+                if (confirm('Apakah Anda yakin ingin menghapus semua data? Tindakan ini tidak dapat dibatalkan.')) {
+                    localStorage.removeItem(STORAGE_KEY);
+                    loadTableData();
+                    updateStorageInfo();
+                    alert('Semua data telah dihapus.');
+                }
+            });
+            
+            // Export to Excel button
+            $('#exportExcel').click(function() {
+                exportToExcel();
+            });
+            
+            // Load table data
+            function loadTableData() {
+                const data = getStoredData();
+                const tableBody = $('#tableBody');
+                tableBody.empty();
+                
+                if (data.length === 0) {
+                    $('#noDataAlert').show();
+                    return;
+                }
+                
+                $('#noDataAlert').hide();
+                
+                data.forEach((item, index) => {
+                    const row = `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${item.participantName}</td>
+                            <td>${item.participantCampus}</td>
+                            <td>${item.participantDepartment}</td>
+                            <td>${item.participantSupervisor}</td>
+                            <td>${formatDate(item.internshipStart)} - ${formatDate(item.internshipEnd)}</td>
+                            <td>${item.overallExperience}</td>
+                            <td>${item.reasons ? item.reasons.join(', ') : ''}</td>
+                            <td>${formatDateTime(item.timestamp)}</td>
+                            <td>
+                                <button class="btn btn-sm btn-primary edit-btn" data-id="${item.id}">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger delete-btn" data-id="${item.id}">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.append(row);
+                });
+                
+                // Add event listeners to edit and delete buttons
+                $('.edit-btn').click(function() {
+                    const id = $(this).data('id');
+                    editData(id);
+                });
+                
+                $('.delete-btn').click(function() {
+                    const id = $(this).data('id');
+                    deleteData(id);
+                });
+            }
+            
+            // Edit data
+            function editData(id) {
+                const data = getDataById(id);
+                if (data) {
+                    // Populate form fields
+                    $('#editId').val(data.id);
+                    $('#participantName').val(data.participantName);
+                    $('#participantCampus').val(data.participantCampus);
+                    $('#participantDepartment').val(data.participantDepartment);
+                    $('#participantSupervisor').val(data.participantSupervisor);
+                    $('#internshipStart').val(data.internshipStart);
+                    $('#internshipEnd').val(data.internshipEnd);
+                    $(`input[name="overallExperience"][value="${data.overallExperience}"]`).prop('checked', true);
+                    $('#bestThing').val(data.bestThing);
+                    $('#biggestChallenge').val(data.biggestChallenge);
+                    $('#classQuality').val(data.classQuality);
+                    $('#supervisorQuality').val(data.supervisorQuality);
+                    $('#facilityQuality').val(data.facilityQuality);
+                    $('#workEnvironment').val(data.workEnvironment);
+                    $('#reasonDetail').val(data.reasonDetail);
+                    $('#otherCompany').val(data.otherCompany);
+                    $('#otherPosition').val(data.otherPosition);
+                    $('#suggestions').val(data.suggestions);
+                    $('#conclusion').val(data.conclusion);
+                    
+                    // Reset checkboxes
+                    $('input[type="checkbox"]').prop('checked', false);
+                    
+                    // Set reason checkboxes
+                    if (data.reasons) {
+                        data.reasons.forEach(reason => {
+                            $(`input[value="${reason}"]`).prop('checked', true);
+                        });
+                    }
+                    
+                    // Set offer checkboxes
+                    if (data.attractiveOffers) {
+                        data.attractiveOffers.forEach(offer => {
+                            $(`input[value="${offer}"]`).prop('checked', true);
+                        });
+                    }
+                    
+                    // Switch to form tab
+                    $('#form-tab').tab('show');
+                    
+                    // Scroll to top
+                    window.scrollTo(0, 0);
+                }
+            }
+            
+            // Delete data
+            function deleteData(id) {
+                if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+                    const data = getStoredData();
+                    const newData = data.filter(item => item.id !== id);
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(newData));
+                    loadTableData();
+                    updateStorageInfo();
+                    alert('Data berhasil dihapus.');
+                }
+            }
+            
+            // Get data by ID
+            function getDataById(id) {
+                const data = getStoredData();
+                return data.find(item => item.id === id);
+            }
+            
+            // Get stored data
+            function getStoredData() {
+                const data = localStorage.getItem(STORAGE_KEY);
+                return data ? JSON.parse(data) : [];
+            }
+            
+            // Save data
+            function saveData(formData) {
+                const data = getStoredData();
+                
+                if (formData.id && $('#editId').val()) {
+                    // Update existing data
+                    const index = data.findIndex(item => item.id === formData.id);
+                    if (index !== -1) {
+                        data[index] = formData;
+                    }
+                } else {
+                    // Add new data
+                    data.push(formData);
+                }
+                
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            }
+            
+            // Update storage info
+            function updateStorageInfo() {
+                const used = JSON.stringify(localStorage).length;
+                const usedKB = (used / 1024).toFixed(2);
+                const percentage = (used / MAX_STORAGE) * 100;
+                
+                $('#storageUsage').text(`${usedKB} KB`);
+                $('#storageBar').css('width', `${percentage}%`);
+                
+                if (percentage > 80) {
+                    $('#storageBar').css('background-color', '#dc3545');
+                } else if (percentage > 60) {
+                    $('#storageBar').css('background-color', '#ffc107');
+                } else {
+                    $('#storageBar').css('background-color', '#28a745');
+                }
+            }
+            
+            // Export to Excel
+            function exportToExcel() {
+                const data = getStoredData();
+                
+                if (data.length === 0) {
+                    alert('Tidak ada data untuk diexport.');
+                    return;
+                }
+                
+                // Prepare data for Excel
+                const excelData = data.map(item => ({
+                    'Nama Peserta': item.participantName,
+                    'Asal Kampus': item.participantCampus,
+                    'Departemen': item.participantDepartment,
+                    'Pembimbing': item.participantSupervisor,
+                    'Periode Magang': `${formatDate(item.internshipStart)} - ${formatDate(item.internshipEnd)}`,
+                    'Pengalaman Keseluruhan': item.overallExperience,
+                    'Hal Terbaik': item.bestThing,
+                    'Hal Paling Menantang': item.biggestChallenge,
+                    'Kualitas Kelas': item.classQuality,
+                    'Kualitas Pembimbing': item.supervisorQuality,
+                    'Kualitas Fasilitas': item.facilityQuality,
+                    'Lingkungan Kerja': item.workEnvironment,
+                    'Alasan Keluar': item.reasons ? item.reasons.join(', ') : '',
+                    'Detail Alasan': item.reasonDetail,
+                    'Perusahaan Lain': item.otherCompany,
+                    'Posisi Lain': item.otherPosition,
+                    'Penawaran Menarik': item.attractiveOffers ? item.attractiveOffers.join(', ') : '',
+                    'Saran': item.suggestions,
+                    'Kesimpulan': item.conclusion,
+                    'Tanggal Input': formatDateTime(item.timestamp)
+                }));
+                
+                // Create worksheet
+                const ws = XLSX.utils.json_to_sheet(excelData);
+                
+                // Create workbook
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'Exit Interview');
+                
+                // Export to file
+                XLSX.writeFile(wb, 'exit_interview_data.xlsx');
+            }
+            
+            // Format date
+            function formatDate(dateString) {
+                if (!dateString) return '';
+                const date = new Date(dateString);
+                return date.toLocaleDateString('id-ID');
+            }
+            
+            // Format date and time
+            function formatDateTime(dateString) {
+                if (!dateString) return '';
+                const date = new Date(dateString);
+                return date.toLocaleString('id-ID');
+            }
+        });
+    </script>
+	
+	<script>
+async function deleteData(id) {
+  if (!confirm('Apakah Anda yakin ingin menghapus data ini?')) return;
+  const data = getStoredData();
+  const del = data.find(x => x.id === id);
+
+  const newData = data.filter(item => item.id !== id);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(newData));
+  loadTableData();
+  updateStorageInfo();
+
+  // Sync hapus ke Sheet (jika data ditemukan)
+  if (del) {
+    const r = await gasCall('delete', { id: del.id });
+    if (!r.ok) {
+      console.warn('[delete sync] gagal:', r.error || r);
+      alert('Data lokal terhapus. Hapus di Sheet gagal, coba lagi nanti.');
+    }
+  }
+  alert('Data berhasil dihapus.');
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,118 @@
+:root {
+            --primary-color: #2e7d32;
+            --secondary-color: #7cb342;
+            --accent-color: #ffa000;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background-color: var(--primary-color);
+        }
+        
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            border: none;
+        }
+        
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #1b5e20;
+            border-color: #1b5e20;
+        }
+        
+        .btn-success {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+        
+        .btn-warning {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: white;
+        }
+        
+        .storage-bar {
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        
+        .storage-fill {
+            height: 100%;
+            border-radius: 5px;
+            background-color: var(--secondary-color);
+            transition: width 0.5s ease;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        .table th {
+            white-space: nowrap;
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .table td {
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+        
+        .nav-tabs .nav-link.active {
+            font-weight: bold;
+            border-bottom: 3px solid var(--accent-color);
+        }
+        
+        .required-field::after {
+            content: " *";
+            color: red;
+        }
+
+        /* === FAB (Floating Action Button) Settings === */
+.fab-settings {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 1050;
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 16px rgba(0,0,0,.2);
+  background-color: var(--accent-color);
+  color: #fff;
+  border: none;
+}
+.fab-settings:hover { transform: scale(1.05); }
+        
+        @media (max-width: 768px) {
+            .card {
+                margin-bottom: 15px;
+            }
+            
+            .btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .btn-group .btn {
+                width: auto;
+            }
+        }
